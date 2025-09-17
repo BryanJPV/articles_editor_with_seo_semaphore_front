@@ -21,7 +21,7 @@ export default defineConfig((ctx) => {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v7',
-      // 'fontawesome-v6',
+      'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -36,6 +36,18 @@ export default defineConfig((ctx) => {
       target: {
         browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
         node: 'node20',
+      },
+
+      env: {
+        //18.220.71.160:5000
+        BACKEND_URL: 'http://localhost:5000/',
+        WEB_URL: 'https://www.activate.fm/',
+        //BACKEND_URL: 'http://18.220.71.160:5000/',
+        //WEB_URL: "http://18.220.71.160:3000/",
+        /* BACKEND_URL: 'http://212.129.4.59:5000/',
+        WEB_URL: "http://212.129.4.59:3000/", */
+        /* BACKEND_URL: 'https://app.activate.fm/',
+        WEB_URL: "https://www.activate.fm/", */
       },
 
       typescript: {
@@ -103,7 +115,25 @@ export default defineConfig((ctx) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
-      config: {},
+      config: {
+        brand: {
+          primary: '#1B77BA',
+          secondary: '#00D8FC',
+          accent: '#F3BA05',
+
+          dark: '#1d1d1d',
+          'dark-page': '#121212',
+
+          positive: '#21BA45',
+          negative: '#C10015',
+          info: '#31CCEC',
+          warning: '#F2C037',
+        },
+        notify: {
+          /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
+        },
+        //dark: auto
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -116,7 +146,7 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
     },
 
     // animations: 'all', // --- includes all animations

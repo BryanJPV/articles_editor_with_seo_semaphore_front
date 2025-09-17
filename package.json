@@ -15,12 +15,16 @@
     "postinstall": "quasar prepare"
   },
   "dependencies": {
+    "@vue/eslint-config-typescript": "^11.0.2",
     "axios": "^1.2.1",
+    "browser-image-compression": "^2.0.0",
     "vue-i18n": "^11.0.0",
     "pinia": "^3.0.1",
+    "process": "^0.11.10",
     "@quasar/extras": "^1.16.4",
     "quasar": "^2.16.0",
     "vue": "3.5.20",
+    "vue-advanced-cropper": "^2.8.8",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
