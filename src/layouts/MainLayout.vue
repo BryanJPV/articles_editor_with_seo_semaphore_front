@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer"></q-btn>
 
         <q-toolbar-title>
-          <q-img src="/img/logo.png" style="min-width: 64px; max-width: 64px"></q-img>
+          <q-img src="/img/marker-solid-full.svg" style="min-width: 64px; max-width: 64px"></q-img>
           <b class="q-pl-md">
             {{
               essentialLinks.find((route) => route.link == $route.path) == null ? 'Dashboard' : ''
