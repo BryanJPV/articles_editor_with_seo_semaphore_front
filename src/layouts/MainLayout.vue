@@ -13,6 +13,49 @@
             {{ essentialLinks.find((route) => route.link == $route.path)?.title }}
           </b>
         </q-toolbar-title>
+
+        <q-avatar color="blue-1" text-color="primary"
+          ><span v-if="userLoginStore.user_name_inicial != ''">{{
+            userLoginStore.user_name_inicial
+          }}</span>
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item
+                v-if="userLoginStore.user_name != ''"
+                class="bg-blue-1 flex items-center justify-center"
+              >
+                <span class="text-bold" text-color="primary">{{ userLoginStore.user_name }}</span>
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup>
+                <div @click="dialogChangeUserPassword = true" class="flex row no-wrap items-center">
+                  <q-avatar
+                    flat
+                    rounded
+                    color="primary"
+                    text-color="white"
+                    icon="fas fa-lock"
+                    size="sm"
+                  />
+                  <span class="q-pl-sm">Cambiar Contraseña</span>
+                </div>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <div @click="cerrarSesion" class="flex row no-wrap items-center">
+                  <q-avatar
+                    flat
+                    rounded
+                    color="primary"
+                    text-color="white"
+                    icon="fas fa-sign-out"
+                    size="sm"
+                  />
+                  <span class="q-pl-sm">Cerrar Sesión</span>
+                </div>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-avatar>
       </q-toolbar>
     </q-header>
 
@@ -103,7 +146,13 @@
 
         <q-card-actions class="flex row justify-end q-px-sm q-pb-sm">
           <q-btn dense class="text-bold" v-close-popup color="black" flat label="Cancelar"></q-btn>
-          <q-btn dense class="text-bold q-ml-sm" color="primary" label="Enviar"></q-btn>
+          <q-btn
+            dense
+            class="text-bold q-ml-sm"
+            v-on:click="changeUserPassword"
+            color="primary"
+            label="Enviar"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -118,15 +167,61 @@
 import { ref } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 import { useRouter } from 'vue-router';
-import type { AxiosResponse } from 'axios';
+//import { type AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
 
 import { axios_aux } from '../boot/axios';
+
+import { userLoginHandler } from '../stores/UserLoginHandler';
+const userLoginStore = userLoginHandler();
 
 import { useQuasar } from 'quasar';
 const $q = useQuasar();
 
 const loadingAxios = ref(false);
+
+// USER DATA
+userLoginStore
+  .getUserData(axios_aux)
+  .then(() => {
+    loadingAxios.value = false;
+    /* $q.notify({
+        type: "positive",
+        message: res.data.message,
+        position: "top",
+      }); */
+  })
+  .catch((err: any) => {
+    loadingAxios.value = false;
+
+    // Cuando llega un solo error el valor err.response.data.error será de todas formas un array
+    if (err instanceof AxiosError) {
+      if (err.response?.data?.error != null) {
+        err.response?.data?.error.forEach((element: string) => {
+          //console.log(element[0])
+          $q.notify({
+            type: 'negative',
+            message: element,
+            position: 'top',
+          });
+        });
+        return;
+      }
+    }
+
+    $q.notify({
+      type: 'negative',
+      message: 'No se pudo obtener la data del Usuario, intente más tarde.',
+      position: 'top',
+    });
+  });
+
+// LOGOUT
+const router = useRouter();
+const cerrarSesion = async () => {
+  userLoginStore.logout();
+  await router.push({ path: '/login' });
+};
 
 // USER PASSWORD UPDATE
 const dialogChangeUserPassword = ref(false);
@@ -135,6 +230,53 @@ const inputNewPassword = ref('');
 
 const isPwd = ref(true);
 const isPwd2 = ref(true);
+
+const changeUserPassword = () => {
+  const credentials = {
+    old_password: inputOldPassword.value,
+    new_password: inputNewPassword.value,
+    axios: axios_aux,
+  };
+
+  userLoginStore
+    .changeUserPasswordAction(credentials)
+    .then(async (res: any) => {
+      loadingAxios.value = false;
+      dialogChangeUserPassword.value = false;
+      $q.notify({
+        type: 'positive',
+        message: res.data.message,
+        position: 'top',
+      });
+
+      userLoginStore.logout();
+      await router.push({ path: '/login' });
+    })
+    .catch((err: any) => {
+      loadingAxios.value = false;
+
+      // Cuando llega un solo error el valor err.response.data.error será de todas formas un array
+      if (err instanceof AxiosError) {
+        if (err.response?.data?.error != null) {
+          err.response?.data?.error.forEach((element: string) => {
+            //console.log(element[0])
+            $q.notify({
+              type: 'negative',
+              message: element,
+              position: 'top',
+            });
+          });
+          return;
+        }
+      }
+
+      $q.notify({
+        type: 'negative',
+        message: 'No se pudo actualizar la Contraseña del Usuario, intente de nuevo.',
+        position: 'top',
+      });
+    });
+};
 
 const essentialLinks: EssentialLinkProps[] = [
   {
