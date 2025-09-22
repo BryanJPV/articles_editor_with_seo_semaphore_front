@@ -1,43 +1,26 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="q-pa-md flex items-center">
+    <div style="width: 100%" class="row items-center justify-center">
+      <div class="q-pa-sm" v-for="link in essentialLinks" v-bind:key="link.title">
+        <EssentialLinkCard
+          :title="link.title == undefined ? '' : link.title"
+          :icon="link.icon == undefined ? '' : link.icon"
+          :link="link.link == undefined ? '' : link.link"
+        />
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
+import type { EssentialLinkProps } from '../components/EssentialLinkCard.vue';
+import EssentialLinkCard from 'components/EssentialLinkCard.vue';
 
-const todos = ref<Todo[]>([
+const essentialLinks: EssentialLinkProps[] = [
   {
-    id: 1,
-    content: 'ct1',
+    title: 'Noticias',
+    icon: 'newspaper',
+    link: '/noticias',
   },
-  {
-    id: 2,
-    content: 'ct2',
-  },
-  {
-    id: 3,
-    content: 'ct3',
-  },
-  {
-    id: 4,
-    content: 'ct4',
-  },
-  {
-    id: 5,
-    content: 'ct5',
-  },
-]);
-
-const meta = ref<Meta>({
-  totalCount: 1200,
-});
+];
 </script>
