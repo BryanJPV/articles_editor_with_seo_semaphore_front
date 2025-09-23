@@ -194,13 +194,11 @@
     <q-spinner color="white" size="5rem"></q-spinner>
   </q-dialog>
 
-  <!-- <q-dialog v-model="dialogRegistrarNoticia" full-width persistent>
-    <RegistrarNoticiaForm
-      @on-done="cerrarRegistroNoticia"
-    ></RegistrarNoticiaForm>
+  <q-dialog v-model="dialogRegistrarNoticia" full-width persistent>
+    <RegistrarNoticiaForm @on-done="cerrarRegistroNoticia"></RegistrarNoticiaForm>
   </q-dialog>
 
-  <q-dialog v-model="dialogEditNoticia" full-width persistent>
+  <!-- <q-dialog v-model="dialogEditNoticia" full-width persistent>
     <EditNoticiaForm
       @on-done="cerrarEditNoticia"
       @on-cancel="cerrarEditNoticia"
@@ -218,8 +216,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-/* import RegistrarNoticiaForm from 'src/components/news_forms/RegistrarNoticiaForm.vue';
-import EditNoticiaForm from 'src/components/news_forms/EditNoticiaForm.vue';
+import RegistrarNoticiaForm from 'src/components/news_forms/RegistrarNoticiaForm.vue';
+/* import EditNoticiaForm from 'src/components/news_forms/EditNoticiaForm.vue';
 import DeleteNoticiaForm from 'src/components/news_forms/DeleteNoticiaForm.vue'; */
 
 import { QTableColumn, QTableProps, date } from 'quasar';
@@ -293,8 +291,8 @@ const columnsNoticias = <QTableColumn[]>[
 export default defineComponent({
   name: 'Noticias',
   components: {
-    /* RegistrarNoticiaForm,
-    EditNoticiaForm,
+    RegistrarNoticiaForm,
+    /* EditNoticiaForm,
     DeleteNoticiaForm, */
   },
   setup() {
