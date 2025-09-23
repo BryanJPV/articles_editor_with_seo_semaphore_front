@@ -20,7 +20,7 @@ export const userLoginHandler = defineStore('userLoginHandler', {
     getRememberTokenAction: async function (credentials: any) {
       return await new Promise((resolve, reject) => {
         credentials.axios
-          .post(/* process.env.BACKEND_URL + 'api/ */ 'user/login', {
+          .post('user/login', {
             usermail: credentials.usermail,
             password: credentials.password,
           })
@@ -30,7 +30,7 @@ export const userLoginHandler = defineStore('userLoginHandler', {
             resolve(response);
           })
           .catch((error: any) => {
-            console.log(error.response);
+            //console.log(error.response);
             reject(error as Error);
           });
       });
@@ -42,7 +42,7 @@ export const userLoginHandler = defineStore('userLoginHandler', {
     changeUserPasswordAction: async function (credentials: any) {
       return await new Promise((resolve, reject) => {
         credentials.axios
-          .post(/* process.env.BACKEND_URL + 'api/ */ 'user/change_user_password', {
+          .post('user/change_user_password', {
             old_password: credentials.old_password,
             new_password: credentials.new_password,
             remember_token: this.remember_token,

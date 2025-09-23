@@ -40,7 +40,7 @@ export default defineConfig((ctx) => {
 
       env: {
         //18.220.71.160:5000
-        BACKEND_URL: 'http://localhost:5000/',
+        BACKEND_URL: 'https://localhost:5000/',
         WEB_URL: 'https://www.activate.fm/',
         //BACKEND_URL: 'http://18.220.71.160:5000/',
         //WEB_URL: "http://18.220.71.160:3000/",

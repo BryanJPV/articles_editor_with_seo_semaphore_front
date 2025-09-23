@@ -34,10 +34,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { userLoginHandler } from '../stores/UserLoginHandler';
+import { axios_aux } from '../boot/axios';
 
 /* import { useQuasar } from 'quasar';
 const $q = useQuasar();
  */
+
 export default defineComponent({
   name: 'Login',
   setup() {
@@ -58,7 +60,7 @@ export default defineComponent({
       const credentials = {
         usermail: this.usermail,
         password: this.password,
-        axios: this.$axios,
+        axios: axios_aux,
       };
 
       this.userLoginStore
