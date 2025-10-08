@@ -4,7 +4,7 @@
       <q-toolbar class="bg-white text-black flex row items-center justify-between">
         <div class="flex no-wrap items-center">
           <q-toolbar-title class="text-bold">Registrar Noticia</q-toolbar-title>
-          <!-- <q-btn flat v-on:click="openDialogSeoGeneral" dense>
+          <q-btn flat v-on:click="openDialogSeoGeneral" dense>
             <q-icon size="1.6rem" :color="semaforoSeoGeneral.estadisticas.color">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@
                 />
               </svg>
             </q-icon>
-          </q-btn> -->
+          </q-btn>
         </div>
         <q-btn flat v-close-popup dense icon="close"></q-btn>
       </q-toolbar>
@@ -299,6 +299,7 @@
                 class="col-12 q-pa-xs flex column"
                 v-for="(itemContenido, index) in formNewNoticia.news_content"
                 :style="{ order: itemContenido.position }"
+                v-bind:key="index"
               >
                 <div class="col-xs-12 q-pa-xs flex justify-between items-center">
                   <div class="text-bold flex items-center">
@@ -475,13 +476,13 @@
                             class="absolute-top-right flex column"
                             style="padding: 3px; background-color: transparent"
                           >
-                            <q-btn
+                            <!-- <q-btn
                               @click="openDialogCroppedNewsContentImage(itemContenido)"
                               size="12px"
                               dense
                               icon="crop"
                               class="bg-white text-black"
-                            ></q-btn>
+                            ></q-btn> -->
                           </div>
                         </q-img>
                       </div>
@@ -573,7 +574,7 @@
     <q-spinner color="white" size="5rem"></q-spinner>
   </q-dialog>
 
-  <!-- <q-dialog v-model="dialogSeoGeneral" persistent>
+  <q-dialog v-model="dialogSeoGeneral" persistent>
     <SemaforoSeoGeneral
       :semaforoSeoGeneralAux="semaforoSeoGeneralAux"
       :colorSemaforo="semaforoSeoGeneral.estadisticas.color"
@@ -585,7 +586,7 @@
       :colorSemaforo="semaforoSeoLegibilidad.estadisticas.color"
     ></SemaforoSeoLegibilidad>
   </q-dialog>
-
+  <!-- 
   <q-dialog v-model="dialogCropImagenNoticia" full-height full-width persistent>
     <CropperDialog
       @on-done="cropImagenNoticiaTerminado"
@@ -609,15 +610,15 @@
 import { ref } from 'vue';
 import axios from 'axios';
 
-/* import CropperDialog from 'src/components/CropperDialog.vue';
-import SemaforoSeoGeneral from 'src/components/news_forms/SemaforoSeoGeneral.vue';
-import SemaforoSeoLegibilidad from 'src/components/news_forms/SemaforoSeoLegibilidad.vue'; */
+//import CropperDialog from 'src/components/CropperDialog.vue';
+import SemaforoSeoGeneral from 'src/components/semaforo_seo_dialogs/SemaforoSeoGeneral.vue';
+import SemaforoSeoLegibilidad from 'src/components/semaforo_seo_dialogs/SemaforoSeoLegibilidad.vue';
 
-import { News, NewsContent } from 'src/interfaces/noticias';
+import type { News, NewsContent } from '../../interfaces/noticias';
 
-/*   import { compressImagen } from 'src/utils/compressImagen';
-import { SemaforoGeneral } from 'src/utils/semaforoSeoGeneral'
-  import { SemaforoLegibilidad } from 'src/utils/semaforoSeoLegibilidad' */
+import { compressImagen } from '../../utils/compressImagen';
+import { SemaforoGeneral } from '../../utils/semaforoSeoGeneral';
+import { SemaforoLegibilidad } from '../../utils/semaforoSeoLegibilidad';
 
 import { userLoginHandler } from 'src/stores/UserLoginHandler';
 
@@ -626,8 +627,8 @@ const $q = useQuasar();
 
 const userLoginStore = userLoginHandler();
 
-/* const semaforoGeneral = new SemaforoGeneral();
-const semaforoLegibilidad = new SemaforoLegibilidad(); */
+const semaforoGeneral = new SemaforoGeneral();
+const semaforoLegibilidad = new SemaforoLegibilidad();
 
 const formNewNoticia = ref<News>({
   id: 0,
@@ -674,7 +675,7 @@ const convertImageToURL = (files: any) => {
   formNewNoticia.value.img_url = URL.createObjectURL(formNewNoticia.value.img_url_blob!);
 };
 
-const cropImagenNoticiaTerminado = ({ urlFilePhotoCropped, croppedImageBlob }: any) => {
+/* const cropImagenNoticiaTerminado = ({ urlFilePhotoCropped, croppedImageBlob }: any) => {
   formNewNoticia.value.img_url = urlFilePhotoCropped;
   formNewNoticia.value.img_url_blob = new File(
     [croppedImageBlob],
@@ -683,7 +684,7 @@ const cropImagenNoticiaTerminado = ({ urlFilePhotoCropped, croppedImageBlob }: a
   );
 
   dialogCropImagenNoticia.value = false;
-};
+}; */
 
 /* REGISTRO DE NOTICIA */
 const loadingAxios = ref(false);
@@ -692,7 +693,7 @@ const emit = defineEmits(['onDone']);
 const registrarNewNoticia = async () => {
   loadingAxios.value = true;
 
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append('titulo', formNewNoticia.value.titulo);
   formData.append('subtitulo', formNewNoticia.value.subtitulo);
   formData.append('img_description', formNewNoticia.value.img_description);
@@ -701,7 +702,7 @@ const registrarNewNoticia = async () => {
   formData.append('status', formNewNoticia.value.status ? '1' : '0');
   formData.append('publish_date', formNewNoticia.value.publish_date);
   if (formNewNoticia.value.img_url_blob != null) {
-    let imagenComprimida = await compressImagen(formNewNoticia.value.img_url_blob as File);
+    const imagenComprimida = await compressImagen(formNewNoticia.value.img_url_blob as File);
     // console.log(imagenComprimida);
     formData.append('img_url_blob', imagenComprimida);
   }
@@ -718,7 +719,7 @@ const registrarNewNoticia = async () => {
     data: formData,
   })
     .then(async (res: any) => {
-      let news_id_to_register = res.data.data.id;
+      const news_id_to_register = res.data.data.id;
 
       $q.notify({
         type: 'positive',
@@ -766,16 +767,17 @@ const registrarNewNoticia = async () => {
 
 /* REGISTRO DE CONTENIDO DE NOTICIA */
 const registrarContenidoNoticia = async (idNoticia: number) => {
-  let arrayPeticionesRegisterNewsContent: any[] = [];
+  const arrayPeticionesRegisterNewsContent: any[] = [];
 
   formNewNoticia.value.news_content.forEach((news_content) => {
-    let formDataNewsContent = new FormData();
+    const formDataNewsContent = new FormData();
+    // Texto o IFrame
     if (news_content.tipo === 1 || news_content.tipo === 5) {
       formDataNewsContent.append('contenido', news_content.contenido);
     }
     if (news_content.tipo === 2) {
       // IMG
-      console.log(news_content);
+      //console.log(news_content);
 
       formDataNewsContent.append('img_url_blob', news_content.file);
     }
@@ -808,9 +810,9 @@ const registrarContenidoNoticia = async (idNoticia: number) => {
   });
 
   try {
-    let responses = await Promise.all(arrayPeticionesRegisterNewsContent);
+    await Promise.all(arrayPeticionesRegisterNewsContent);
 
-    let mensaje = 'Se registraron correctamente los Componentes de la Noticia.';
+    const mensaje = 'Se registraron correctamente los Componentes de la Noticia.';
 
     $q.notify({
       type: 'positive',
@@ -851,10 +853,10 @@ const convertImageToURLNoticiaContenido = (files: any, news_content: any) => {
   }
   nombreRespaldoImagenPortadaImagenNoticiaContenido.value = files.name;
   tipoRespaldoImagenPortadaImagenNoticiaContenido.value = files.type;
-  news_content.img_url = URL.createObjectURL(news_content.file!);
+  news_content.img_url = URL.createObjectURL(news_content.file);
 };
 
-let stringImagenNoticiaContenidoToCropAux: string = '';
+/* let stringImagenNoticiaContenidoToCropAux: string = '';
 let newsContentImagenNoticiaContenidoToCropAux: any = [];
 const dialogCropImagenNoticiaContenido = ref(false);
 
@@ -883,7 +885,7 @@ const cropImagenNoticiaContenidoTerminado = ({ urlFilePhotoCropped, croppedImage
   newsContentImagenNoticiaContenidoToCropAux = [];
 
   dialogCropImagenNoticiaContenido.value = false;
-};
+}; */
 
 // Movimiento de los contenidos
 const agregarContenido = (position: number) => {
@@ -915,16 +917,19 @@ const eliminarContenido = (index: number) => {
     return;
   }
 
-  let contenidoEliminar = JSON.parse(JSON.stringify(formNewNoticia.value.news_content[index]));
-  let position = contenidoEliminar.position;
+  const contenidoEliminar = JSON.parse(JSON.stringify(formNewNoticia.value.news_content[index]));
+  const position = contenidoEliminar.position;
 
-  let nuevoArrayItems: NewsContent[] = [];
-  for (var index = 0; index < formNewNoticia.value.news_content.length; index++) {
-    let itemPosition = formNewNoticia.value.news_content[index].position;
+  const nuevoArrayItems: NewsContent[] = [];
+  for (let index = 0; index < formNewNoticia.value.news_content.length; index++) {
+    const itemPosition = formNewNoticia.value.news_content[index]?.position;
 
     if (itemPosition !== position) {
-      let itemNuevo = JSON.parse(JSON.stringify(formNewNoticia.value.news_content[index]));
+      const itemNuevo = JSON.parse(JSON.stringify(formNewNoticia.value.news_content[index]));
 
+      if (itemPosition == undefined) {
+        continue;
+      }
       if (itemPosition > position) {
         itemNuevo.position = itemNuevo.position - 1;
       }
@@ -941,11 +946,14 @@ const moverContenido = (index: number, isDown: boolean) => {
     return;
   }
 
-  let contenidoModificar = formNewNoticia.value.news_content[index];
-  let position = contenidoModificar.position;
+  const contenidoModificar = formNewNoticia.value.news_content[index];
+  if (contenidoModificar == null) {
+    return;
+  }
+  const position = contenidoModificar.position;
 
   if (isDown) {
-    let itemPosition = formNewNoticia.value.news_content.find(
+    const itemPosition = formNewNoticia.value.news_content.find(
       (itemContenido) => itemContenido.position === position + 1,
     );
     if (itemPosition === null) {
@@ -955,7 +963,7 @@ const moverContenido = (index: number, isDown: boolean) => {
     itemPosition!.position = position;
     contenidoModificar.position = position + 1;
   } else {
-    let itemPosition = formNewNoticia.value.news_content.find(
+    const itemPosition = formNewNoticia.value.news_content.find(
       (itemContenido) => itemContenido.position === position - 1,
     );
     if (itemPosition === null) {
@@ -967,7 +975,7 @@ const moverContenido = (index: number, isDown: boolean) => {
   }
 };
 
-const onRejected = (rejectedEntries: any) => {
+const onRejected = (__rejectedEntries: any) => {
   $q.notify({
     type: 'negative',
     message: 'La Imagen no puede tener un peso mayor de 20 Mb',
@@ -976,7 +984,7 @@ const onRejected = (rejectedEntries: any) => {
 };
 
 /* YOAST SEO STUFF Semaforo  */
-/* const dialogSeoGeneral = ref(false);
+const dialogSeoGeneral = ref(false);
 const dialogSeoLegibilidad = ref(false);
 let semaforoSeoGeneralAux: any[] = [];
 const semaforoSeoGeneral = ref<any>(semaforoGeneral.getResultadosComoObjeto());
@@ -995,7 +1003,7 @@ const openDialogSeoLegibilidad = async () => {
   semaforoSeoLegibilidad.value = semaforoLegibilidad.getResultadosComoObjeto();
   semaforoSeoLegibilidadAux = semaforoLegibilidad.getResultadosComoArray();
   dialogSeoLegibilidad.value = true;
-}; */
+};
 
 /* watch(formEditNoticia.value.news_content, (newValue, oldValue) => {
     console.log(newValue);
@@ -1009,14 +1017,14 @@ const openDialogSeoLegibilidad = async () => {
   */
 
 /* const calculoSemaforoGeneralCall = () => {
-    semaforoGeneral.procesar(formNewNoticia.value)
-    semaforoSeoGeneral.value = semaforoGeneral.getResultadosComoObjeto()
-  }
+  semaforoGeneral.procesar(formNewNoticia.value);
+  semaforoSeoGeneral.value = semaforoGeneral.getResultadosComoObjeto();
+};
 
-  const calculoSemaforoLegibilidadCall = async () => {
-    await semaforoLegibilidad.procesar(formNewNoticia.value)
-    semaforoSeoLegibilidad.value = semaforoLegibilidad.getResultadosComoObjeto()
-  } */
+const calculoSemaforoLegibilidadCall = async () => {
+  await semaforoLegibilidad.procesar(formNewNoticia.value);
+  semaforoSeoLegibilidad.value = semaforoLegibilidad.getResultadosComoObjeto();
+}; */
 </script>
 
 <style scoped>

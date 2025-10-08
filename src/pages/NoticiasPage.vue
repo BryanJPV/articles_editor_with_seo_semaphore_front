@@ -220,11 +220,12 @@ import RegistrarNoticiaForm from 'src/components/news_forms/RegistrarNoticiaForm
 /* import EditNoticiaForm from 'src/components/news_forms/EditNoticiaForm.vue';
 import DeleteNoticiaForm from 'src/components/news_forms/DeleteNoticiaForm.vue'; */
 
-import { QTableColumn, QTableProps, date } from 'quasar';
+import type { QTableColumn } from 'quasar';
+import { date } from 'quasar';
 
 import axios from 'axios';
 
-import { News } from 'src/interfaces/noticias';
+import { type News } from 'src/interfaces/noticias';
 
 import { userLoginHandler } from 'src/stores/UserLoginHandler';
 
@@ -288,6 +289,14 @@ const columnsNoticias = <QTableColumn[]>[
   { name: 'created_at', align: 'left', label: 'Fecha', field: 'created_at', sortable: true },
 ];
 
+interface NoticiasPagination {
+  page?: number;
+  rowsPerPage?: number;
+  rowsNumber?: number;
+  sortBy?: string | null;
+  descending?: boolean;
+}
+
 export default defineComponent({
   name: 'Noticias',
   components: {
@@ -312,12 +321,12 @@ export default defineComponent({
       // Dialog Delete
       dialogDeleteNoticia: ref(false),
 
-      noticiasPagination: ref({
+      noticiasPagination: ref<NoticiasPagination>({
         page: 0,
         rowsPerPage: 10,
         rowsNumber: 10,
-        sortBy: undefined,
-        descending: undefined,
+        sortBy: null,
+        descending: false,
       }),
     };
   },
@@ -327,13 +336,13 @@ export default defineComponent({
 
   methods: {
     async onRequest(props: any) {
-      const { page, rowsPerPage, sortBy, descending, rowsNumber } = props.pagination;
+      const { page, rowsPerPage, sortBy, descending /* , rowsNumber */ } = props.pagination;
       const filter = props.filter;
 
       this.loadingAxios = true;
 
       const newsTotal = await this.getListadoNewsByPagination(
-        ((page - 1) * rowsPerPage) as number,
+        (page - 1) * rowsPerPage,
         rowsPerPage as number,
         filter && filter.trim().length > 0 ? (filter as string) : null,
       );
@@ -432,7 +441,7 @@ export default defineComponent({
       (this.$refs.newsTable as any).requestServerInteraction();
     },
 
-    toggleSelected() {
+    /* toggleSelected() {
       const slicedNoticias = this.rowsNoticias.slice(
         this.noticiasPagination.rowsPerPage * (this.noticiasPagination.page - 1),
         this.noticiasPagination.rowsPerPage * this.noticiasPagination.page,
@@ -440,7 +449,7 @@ export default defineComponent({
 
       this.noticiasSelected =
         this.noticiasSelected.length == slicedNoticias.length ? [] : slicedNoticias;
-    },
+    }, */
   },
 
   computed: {
